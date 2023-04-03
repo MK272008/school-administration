@@ -1,0 +1,135 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
+  // Further reading:
+  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
+  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+  url      = env("DATABASE_URL")
+}
+
+// model Example {
+//     id        String   @id @default(cuid())
+//     createdAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
+// }
+
+// // Necessary for Next auth
+// model Account {
+//     id                String  @id @default(cuid())
+//     userId            String
+//     type              String
+//     provider          String
+//     providerAccountId String
+//     refresh_token     String? // @db.Text
+//     access_token      String? // @db.Text
+//     expires_at        Int?
+//     token_type        String?
+//     scope             String?
+//     id_token          String? // @db.Text
+//     session_state     String?
+//     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//     @@unique([provider, providerAccountId])
+// }
+
+// model Session {
+//     id           String   @id @default(cuid())
+//     sessionToken String   @unique
+//     userId       String
+//     expires      DateTime
+//     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+// }
+
+// model VerificationToken {
+//     identifier String
+//     token      String   @unique
+//     expires    DateTime
+
+//     @@unique([identifier, token])
+// }
+
+model User {
+  id                   String                @id @default(cuid())
+  name                 String?
+  username             String?
+  password             String
+  role                 String?
+  email                String                @unique
+  emailVerified        Boolean?
+  image                String?
+  teacherProfile       TeacherProfile?
+  administratorProfile AdministratorProfile?
+  parentProfile        ParentProfile?
+}
+
+model School {
+  id              String                @id @default(cuid())
+  name            String
+  administratorId String?               @unique
+  administrator   AdministratorProfile?
+  students        Student[]
+  teachers        TeacherProfile[]
+}
+
+model Student {
+  id       String         @id @default(cuid())
+  name     String
+  age      Int
+  parent   ParentProfile?
+  school   School?        @relation(fields: [schoolId], references: [id])
+  schoolId String?
+  classId  String?
+  class    Class?         @relation(fields: [classId], references: [id])
+}
+
+model TeacherProfile {
+  id        String  @id @default(cuid())
+  subject   String
+  teacher   User    @relation(fields: [teacherId], references: [id])
+  teacherId String  @unique
+  school    School? @relation(fields: [schoolId], references: [id])
+  schoolId  String?
+  classes   Class[]
+  receivedInvitations TeacherInvitation[]
+}
+
+model AdministratorProfile {
+  id              String @id @default(cuid())
+  school          School @relation(fields: [schoolId], references: [id])
+  schoolId        String @unique
+  administrator   User   @relation(fields: [administratorId], references: [id])
+  administratorId String @unique
+  sentTeacherInvitations TeacherInvitation[]
+}
+
+model ParentProfile {
+  id       String  @id @default(cuid())
+  child    Student? @relation(fields: [childId], references: [id])
+  childId  String?  @unique
+  parent   User    @relation(fields: [parentId], references: [id])
+  parentId String  @unique
+}
+
+model Class {
+  id       String           @id @default(cuid())
+  name     String           @unique
+  students Student[]
+  teachers TeacherProfile[]
+}
+
+model TeacherInvitation {
+  id String @id @default(cuid())
+  title String
+  body String
+  sender AdministratorProfile @relation(fields: [senderId], references: [id])
+  senderId String
+  receiver TeacherProfile @relation(fields: [receiverId], references: [id])
+  receiverId String
+}
