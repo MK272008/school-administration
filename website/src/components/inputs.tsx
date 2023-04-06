@@ -2,6 +2,7 @@ import React from "react";
 import { HiCheck } from "react-icons/hi";
 import { AnimatePresence, motion } from "framer-motion";
 import { AiOutlineSearch } from "react-icons/ai";
+import { NextPage } from "@/interfaces/app";
 
 type InputProps = React.DetailedHTMLProps<
     React.InputHTMLAttributes<HTMLInputElement>,
@@ -37,7 +38,6 @@ export function Checkbox(props: CheckboxProps) {
         >
             <input
                 type="checkbox"
-                {...props}
                 className={`bg-dark-secondary hover:bg-dark-tertiary transition-colors w-5 h-5 rounded-md border-dark-border ${props.className ?? ""}`}
                 style={{ margin: "auto" }}
                 onChange={() => props.setChecked(!props.checked)}

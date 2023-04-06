@@ -8,7 +8,9 @@ export const studentRouter = createTRPCRouter({
             let students = await prisma.student.findMany({
                 where: {
                     school: {
-                        administratorId: ctx.user.id
+                        administrator: {
+                            administratorId: ctx.user.id
+                        }
                     }
                 },
                 include: {
@@ -42,59 +44,54 @@ export const studentRouter = createTRPCRouter({
             return { student }
         }),
 
-    // create: protectedProcedure
-    //     .input(z.object({
-    //         name: z.string(),
-    //         age: z.number(),
-    //         parent: z.string(),
-    //         section: z.string(),
-    //         standard: z.number(),
-    //     }))
-    //     .mutation(async ({ input, ctx }) => {
-    //         console.log(input);
+    create: protectedProcedure
+        .input(z.object({
+            name: z.string(),
+            age: z.number(),
+            parent: z.string(),
+            section: z.string(),
+            standard: z.number(),
+        }))
+        .mutation(async ({ input, ctx }) => {
+            console.log(input);
 
-    //         const { name, age, parent } = input;
+            const { name, age } = input;
 
-    //         // fetching the currently logged in users administrator profile
-    //         const admin = await prisma.administratorProfile.findFirst({
-    //             where: {
-    //                 administrator: {
-    //                     id: ctx.user.id
-    //                 }
-    //             }
-    //         });
-            
-    //         if (!admin) return;
+            // fetching the currently logged in users administrator profile
+            const admin = await prisma.administratorProfile.findFirst({
+                where: {
+                    administrator: {
+                        id: ctx.user.id
+                    }
+                }
+            });
 
-    //         let student = await prisma.student.create({
-    //             data: {
-    //                 name, 
-    //                 age, 
-    //                 parent: {
-    //                     connect: {
-    //                         parentId: 
-    //                     }
-    //                 },
-    //                 school: {
-    //                     connect: {
-    //                         administratorId: admin.id
-    //                     }
-    //                 },
-    //                 class: {
-    //                     connectOrCreate: {
-    //                         create: {
-    //                              name: input.standard + "-" +  input.section
-    //                         },
-    //                         where: {
-    //                             name: input.standard + "-" +  input.section
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         });
+            if (!admin) return;
 
-    //         return { student };
-    //     }),
+            let student = await prisma.student.create({
+                data: {
+                    name,
+                    age,
+                    school: {
+                        connect: {
+                            id: admin.schoolId
+                        }
+                    },
+                    class: {
+                        connectOrCreate: {
+                            create: {
+                                name: input.standard + "-" + input.section
+                            },
+                            where: {
+                                name: input.standard + "-" + input.section
+                            }
+                        }
+                    }
+                }
+            });
+
+            return { student };
+        }),
 
     update: protectedProcedure
         .input(z.object({
@@ -122,11 +119,24 @@ export const studentRouter = createTRPCRouter({
     delete: protectedProcedure
         .input(z.object({ id: z.string() }))
         .mutation(async ({ input }) => {
-            await prisma.student.delete({
+
+            await prisma.student.update({
                 where: {
                     id: input.id,
+                },
+                data: {
+                    class: {
+                        disconnect: true
+                    },
+                    parent: {
+                        disconnect: true
+                    },
+                    parentInvitations: {
+                        
+                    }
                 }
             });
+
             return true;
         })
 

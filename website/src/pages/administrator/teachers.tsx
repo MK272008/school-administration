@@ -1,11 +1,12 @@
 import AddTeacherModal from "@/components/administrator/teachers/AddTeacher";
 import Header, { ActionHeader } from "@/components/administrator/teachers/Header";
 import TeachersTable from "@/components/administrator/teachers/Table";
+import { NextPage } from "@/interfaces/app";
 import AdministratorLayout from "@/layouts/Dashboards/Aministrator";
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
-export default function AdministratorStudent() {
+const AdministratorTeacher: NextPage = () => {
 
   const [search, setSearch] = useState("");
   const [actionHeader, setActionHeader] = useState(false);
@@ -22,7 +23,6 @@ export default function AdministratorStudent() {
 //   }, [toUpdate])
 
   return (
-    <AdministratorLayout>
         <div className="overflow-hidden p-5 flex items-center justify-center relative">
 			<div className="w-full grid grid-rows-[20%_80%] h-full">
 				<AnimatePresence>
@@ -43,11 +43,14 @@ export default function AdministratorStudent() {
 				setOpened={setAddTeacherModal}
         />
         </div>
-    </AdministratorLayout>
   )
 }
 
 
+AdministratorTeacher.getLayout = (page) => (
+	<AdministratorLayout>
+		{page}
+	</AdministratorLayout>
+)
 
-
-
+export default AdministratorTeacher

@@ -12,9 +12,7 @@ import { HiHome } from "react-icons/hi";
 import { api } from "@/utils/api";
 
 function Header() {
-  const user = useUser();
-
-  const schoolQuery = api.school.getByOwner.useQuery();
+    const schoolQuery = api.school.getByOwner.useQuery();
 
   return (
     <DashboardHeader>

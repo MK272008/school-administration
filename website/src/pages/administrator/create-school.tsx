@@ -12,10 +12,12 @@ export default function CreateSchool() {
   const connectMutation = api.school.connectAdministrator.useMutation();
 
   async function submit(e: React.MouseEvent) {
+    e.preventDefault();
     let { school } = await mutation.mutateAsync({ name: name });
-    let { administratorProfile } = await adminMutation.mutateAsync({
+    let adminProfileMutation = await adminMutation.mutateAsync({
       schoolID: school.id,
     });
+    console.log(adminProfileMutation.administratorProfile)
     await connectMutation.mutateAsync({ schoolID: school.id });
     await router.push('/administrator');
   }

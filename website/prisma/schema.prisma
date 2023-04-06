@@ -79,42 +79,45 @@ model School {
 }
 
 model Student {
-  id       String         @id @default(cuid())
-  name     String
-  age      Int
-  parent   ParentProfile?
-  school   School?        @relation(fields: [schoolId], references: [id])
-  schoolId String?
-  classId  String?
-  class    Class?         @relation(fields: [classId], references: [id])
+  id                String             @id @default(cuid())
+  name              String
+  age               Int
+  parent            ParentProfile?
+  school            School?            @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  schoolId          String?
+  class             Class?             @relation(fields: [classId], references: [id], onDelete: Cascade)
+  classId           String?
+  parentInvitations ParentInvitation[]
 }
 
 model TeacherProfile {
-  id        String  @id @default(cuid())
-  subject   String
-  teacher   User    @relation(fields: [teacherId], references: [id])
-  teacherId String  @unique
-  school    School? @relation(fields: [schoolId], references: [id])
-  schoolId  String?
-  classes   Class[]
+  id                  String              @id @default(cuid())
+  subject             String
+  teacher             User                @relation(fields: [teacherId], references: [id])
+  teacherId           String              @unique
+  school              School?             @relation(fields: [schoolId], references: [id])
+  schoolId            String?
+  classes             Class[]
   receivedInvitations TeacherInvitation[]
 }
 
 model AdministratorProfile {
-  id              String @id @default(cuid())
-  school          School @relation(fields: [schoolId], references: [id])
-  schoolId        String @unique
-  administrator   User   @relation(fields: [administratorId], references: [id])
-  administratorId String @unique
+  id                     String              @id @default(cuid())
+  school                 School              @relation(fields: [schoolId], references: [id])
+  schoolId               String              @unique
+  administrator          User                @relation(fields: [administratorId], references: [id])
+  administratorId        String              @unique
   sentTeacherInvitations TeacherInvitation[]
+  ParentInvitation       ParentInvitation[]
 }
 
 model ParentProfile {
-  id       String  @id @default(cuid())
-  child    Student? @relation(fields: [childId], references: [id])
-  childId  String?  @unique
-  parent   User    @relation(fields: [parentId], references: [id])
-  parentId String  @unique
+  id               String             @id @default(cuid())
+  child            Student?           @relation(fields: [childId], references: [id], onDelete: SetNull)
+  childId          String?            @unique
+  parent           User               @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  parentId         String             @unique
+  ParentInvitation ParentInvitation[]
 }
 
 model Class {
@@ -125,11 +128,21 @@ model Class {
 }
 
 model TeacherInvitation {
-  id String @id @default(cuid())
-  title String
-  body String
-  sender AdministratorProfile @relation(fields: [senderId], references: [id])
-  senderId String
-  receiver TeacherProfile @relation(fields: [receiverId], references: [id])
+  id         String               @id @default(cuid())
+  title      String
+  sender     AdministratorProfile @relation(fields: [senderId], references: [id])
+  senderId   String
+  receiver   TeacherProfile       @relation(fields: [receiverId], references: [id])
   receiverId String
+}
+
+model ParentInvitation {
+  id         String               @id @default(cuid())
+  title      String
+  sender     AdministratorProfile @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  senderId   String
+  receiver   ParentProfile        @relation(fields: [receiverId], references: [id], onDelete: Cascade)
+  receiverId String
+  student    Student              @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId  String
 }

@@ -17,33 +17,36 @@ export const parentRouter = createTRPCRouter({
             return { parentProfile };
         }),
 
-    addChild: protectedProcedure
-    .input(z.object({ name: z.string(), age: z.number(), standard: z.string(), section: z.string() }))
-        .mutation(async ({ ctx , input}) => {
-            let student = await prisma.student.create({
-                data: {
-                    name: input.name,
-                    age: input.age,
-                    parent: {
-                        connect: {
+        getStudentSchool: protectedProcedure    
+            .query(async ({ ctx }) => {
+                const student = await prisma.student.findFirst({
+                    where: {
+                        parent: {
                             parentId: ctx.user.id
                         }
-                    },
-                    class: {
-                        connectOrCreate: {
-                            create: {
-                                name: `${input.standard}-${input.section}`
-                            },
-                            where: {
-                                name: `${input.standard}-${input.section}`
-                            }
-                        }
-                    },
-                    school: {
-                        
                     }
-                }
-            });
-            return { student };
-        })
+                });
+                return { student }
+            })
+
+
+    // addChild: protectedProcedure
+    // .input(z.object({ name: z.string(), age: z.number() }))
+    //     .mutation(async ({ ctx , input}) => {
+
+
+
+    //         const student = await prisma.student.create({
+    //             data: {
+    //                 name: input.name,
+    //                 age: input.age,
+    //                 parent: {
+    //                     connect: {
+    //                         parentId: ctx.user.id
+    //                     }
+    //                 }
+    //             }
+    //         });
+    //         return { student };
+    //     })
 })

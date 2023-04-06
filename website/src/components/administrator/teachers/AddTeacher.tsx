@@ -44,20 +44,7 @@ export default function AddTeacherModal({
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!teacherProfile.data?.teacherProfile) return;
-
-    const col = collection(
-      db,
-      `/invitations`
-    ) as CollectionReference<Invitation>;
-
-    await addDoc(col, {
-      title: `You are invited to join ${school?.name}!`,
-      body: "Click to join school as a teacher!",
-      from: user?.email ?? "",
-      schoolID: school?.id ?? "",
-      to: email
-    });
+    
     setOpened(false);
   }
 

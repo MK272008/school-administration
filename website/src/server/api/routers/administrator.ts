@@ -42,5 +42,18 @@ export const administratorRouter = createTRPCRouter({
             
 
             return { administratorProfile };
+        }),
+
+    getById: protectedProcedure
+        .input(z.object({ id: z.string() }))
+        .query(async ({ ctx, input }) => {
+            return await prisma.administratorProfile.findUnique({
+                where: {
+                    id: input.id
+                },
+                include: {
+                    administrator: true
+                }
+            })
         })
 })

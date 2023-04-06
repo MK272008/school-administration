@@ -21,6 +21,7 @@ export default function Signin() {
 
   const mutation = api.auth.signup.useMutation();
   const userQuery = api.user.getByEmail.useQuery({ email });
+  const context = api.useContext();
 
   useEffect(() => {
     userQuery.refetch();
@@ -52,11 +53,14 @@ export default function Signin() {
 
     data.image = downloadURL;
     let res = await mutation.mutateAsync(data);
-    localStorage.setItem('token', res.token);
+    localStorage.setItem("token", res.token);
 
-    if (data.role == 'administrator') router.push("/administrator/create-school");
-    else if (data.role == 'parent') await router.push(`/parent/add-child`);
-    else if (data.role == 'teacher') await router.push('/teacher/')
+    await context.user.invalidate();
+
+    if (data.role == "administrator")
+      router.push("/administrator/create-school");
+    else if (data.role == "parent") await router.push(`/parent/add-child`);
+    else if (data.role == "teacher") await router.push("/teacher/create-profile");
   }
 
   return (
@@ -114,12 +118,21 @@ export default function Signin() {
             )}
           </div>
           <FormInput placeholder="Password" type="Password" name="password" />
-          <Select name="role" placeholder="Role" defaultValue="administrator" defaultChecked={true}>
+          <Select
+            name="role"
+            placeholder="Role"
+            defaultValue="administrator"
+            defaultChecked={true}
+          >
             <Option value="administrator">Administrator</Option>
             <Option value="teacher">Teacher</Option>
             <Option value="parent">Parent</Option>
           </Select>
-          <PrimaryButton className="mt-5" type="submit" disabled={emailError ? true : false}>
+          <PrimaryButton
+            className="mt-5"
+            type="submit"
+            disabled={emailError ? true : false}
+          >
             CONTINUE
           </PrimaryButton>
           {/* <div className="flex space-x-5"> */}

@@ -1,10 +1,19 @@
 import ParentLayout from '@/layouts/Dashboards/Parent'
 import React from 'react'
+import type { NextPage } from '@/interfaces/app'
 
-export default function ParentClassroom() {
+const ParentClassroom: NextPage = () => {
   return (
-    <ParentLayout>
-        <div>ParentClassroom</div>
-    </ParentLayout>
+    <div className=''>
+      assignments etc
+    </div>
   )
 }
+
+ParentClassroom.getLayout = (page) => (
+  <ParentLayout>
+    {page}
+  </ParentLayout>
+)
+
+export default ParentClassroom

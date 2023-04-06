@@ -35,6 +35,7 @@ export const schoolRouter = createTRPCRouter({
             id: input.schoolID
           },
           data: {
+            administratorId: ctx.user.id,
             administrator: {
               connect: {
                 id: profile?.id
@@ -48,11 +49,17 @@ export const schoolRouter = createTRPCRouter({
 
     getByOwner: protectedProcedure
       .query(async ({ ctx }) => {
-        const school = await prisma.school.findUnique({
+        const profile = await prisma.administratorProfile.findUnique({
           where: {
             administratorId: ctx.user.id
           }
         });
+        console.log(profile)
+        const school = await prisma.school.findUnique({
+          where: {
+            id: profile?.schoolId
+          }
+        })
 
         return { school };
       })

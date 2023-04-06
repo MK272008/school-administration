@@ -15,19 +15,34 @@ export default function AddStudentModal({
   // const mutation = api.student.create.useMutation();
 
   const context = api.useContext();
+  const invitationMutation = api.parentInvitation.create.useMutation();
+  const studentCreateMutation = api.student.create.useMutation();
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
-  //   const data = Object.fromEntries(
-  //     new FormData(e.target as HTMLFormElement).entries()
-  //   ) as unknown as RouterInputs["student"]["create"];
+    e.preventDefault();
+    const data = Object.fromEntries(
+      new FormData(e.target as HTMLFormElement).entries()
+    ) as unknown as {
+      name: string;
+      standard: number;
+      section: string;
+      age: number;
+      parent: string;
+    };
 
-  //   data.age = parseInt((data.age + ""));
-  //   data.standard = parseInt((data.standard + ""));
+    data.standard = parseInt(data.standard + "");
+    data.age = parseInt(data.age + "");
 
-  //   e.preventDefault();
-  //   await mutation.mutateAsync(data);
-  //   setOpened(false);
-  //   await context.student.all.invalidate();
+    const { student } = (await studentCreateMutation.mutateAsync(data)) ?? {
+      student: null,
+    };
+    console.log(student)
+    await invitationMutation.mutateAsync({
+      parentEmail: data.parent,
+      studentId: student?.id ?? "",
+    });
+    context.student.all.invalidate();
+    setOpened(false);
   }
 
   function exit() {

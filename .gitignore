@@ -42,45 +42,45 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 =======
-/frontend/node_modules
-/frontend/.pnp
-/frontend.pnp.js
+/website/node_modules
+/website/.pnp
+/website.pnp.js
 
 # testing
-/frontend/coverage
+/website/coverage
 
 # database
-/frontend/prisma/db.sqlite
-/frontend/prisma/db.sqlite-journal
+/website/prisma/db.sqlite
+/website/prisma/db.sqlite-journal
 
 # next.js
-/frontend/.next/
-/frontend/out/
-/frontendnext-env.d.ts
+/website/.next/
+/website/out/
+/websitenext-env.d.ts
 
 # production
-/frontend/build
+/website/build
 
 # misc
-/frontend.DS_Store
-/frontend*.pem
+/website.DS_Store
+/website*.pem
 
 # debug
-/frontendnpm-debug.log*
-/frontendyarn-debug.log*
-/frontendyarn-error.log*
-/frontend.pnpm-debug.log*
+/websitenpm-debug.log*
+/websiteyarn-debug.log*
+/websiteyarn-error.log*
+/website.pnpm-debug.log*
 
 # local env files
 # do not commit any .env files to git, except for the .env.example file. https://create.t3.gg/en/usage/env-variables#using-environment-variables
-/frontend.env
-/frontend.env*.local
+/website.env
+/website.env*.local
 
 # vercel
-/frontend.vercel
+/website.vercel
 
 # typescript
-/frontend*.tsbuildinfo
+/website*.tsbuildinfo
 
 /trash/** 
->>>>>>> 33c7076 (First commit)
+/separate/**

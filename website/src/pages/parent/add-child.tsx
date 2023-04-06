@@ -9,7 +9,7 @@ export default function AddChild() {
     const router = useRouter();
 
     const profileMutation = api.parent.create.useMutation();
-    const childMutation = api.parent.addChild.useMutation();
+    const childMutation = api.parren.useMutation();
 
     async function submit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -17,7 +17,7 @@ export default function AddChild() {
         data.age = parseInt(data.age + "");
         await profileMutation.mutateAsync();
         await childMutation.mutateAsync(data);
-        await router.push('/parent/')
+        await router.push('/parent/');
     }
 
   return (
@@ -26,8 +26,8 @@ export default function AddChild() {
         <h1 className="text-4xl text-center py-10">Enter your Childs information to Continue</h1>
         <form className="flex flex-col space-y-2" onSubmit={submit}>
           <FormInput name="name" placeholder="Name" type="text" />
-          <FormInput name="standard" placeholder="Standard" type="number" />
-          <FormInput name="section" placeholder="Section" type="text" />
+          {/* <FormInput name="standard" placeholder="Standard" type="number" />
+          <FormInput name="section" placeholder="Section" type="text" /> */}
           <FormInput name="age" placeholder="Age" type="number" />
           <PrimaryButton type="submit">CONTINUE</PrimaryButton>
         </form>

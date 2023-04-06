@@ -13,7 +13,7 @@ export const teacherRouter = createTRPCRouter({
                     id: ctx.user.id
                 }
             });
-            if (!admin) return { teacherProfiles: []};
+            if (!admin) return { teacherProfiles: [] };
 
             const teacherProfiles = await prisma.teacherProfile.findMany({
                 where: {
@@ -30,7 +30,7 @@ export const teacherRouter = createTRPCRouter({
         .input(z.object({ email: z.string() }))
         .mutation(async ({ input }) => {
 
-           return true
+            return true
         }),
 
     remove: protectedProcedure
@@ -64,7 +64,7 @@ export const teacherRouter = createTRPCRouter({
 
     joinSchool: protectedProcedure
         .input(z.object({ schoolID: z.string() }))
-        .mutation(async ({ input, ctx}) => {
+        .mutation(async ({ input, ctx }) => {
             let teacherProfile = await prisma.teacherProfile.update({
                 where: {
                     teacherId: ctx.user.id
@@ -93,5 +93,51 @@ export const teacherRouter = createTRPCRouter({
             });
 
             return { teacherProfile }
+        }),
+
+    setSubject: protectedProcedure
+        .input(z.object({ subject: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            const profile = await prisma.teacherProfile.create({
+                data: {
+                    teacher: {
+                        connect: {
+                            id: ctx.user.id,
+                        }
+                    },
+                    subject: input.subject
+                }
+            });
+            return { teacherProfile: profile }
+        }),
+
+    inviteStudent: protectedProcedure
+        .input(z.object({ teacherID: z.string() }))
+        .mutation(async ({ input, ctx }) => {
+
+            const schoolAdmin = await prisma.administratorProfile.findUnique({
+                where: {
+                    administratorId: ctx.user.id
+                },
+                include: {
+                    school: true
+                }
+            })
+
+            const teacherInvitation = await prisma.teacherInvitation.create({
+                data: {
+                    title: `You have been invited to teach in ${schoolAdmin?.school.name}`,
+                    receiver: {
+                        connect: {
+                            id: input.teacherID
+                        }
+                    },
+                    sender: {
+                        connect: {
+                            id: schoolAdmin?.id
+                        }
+                    }
+                }
+            })
         })
 })

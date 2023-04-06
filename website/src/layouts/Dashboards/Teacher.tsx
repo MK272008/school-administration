@@ -32,7 +32,7 @@ function Sidebar() {
           iconBackgroundColor="bg-blue-500"
           iconFillColor="text-blue-500"
           title="Home"
-          url="/administrator"
+          url="/teacher"
         />
         <DashboardSidebarItem
           icon={IoMdNotificationsOutline}

@@ -19,14 +19,18 @@ function Header() {
 
   return (
     <DashboardHeader>
-      <div className="w-full h-full flex">
-        <h1 className="my-auto text-2xl mx-4">{schoolQuery.data?.school?.name}</h1>
+      <div className="flex h-full w-full">
+        <h1 className="my-auto mx-4 text-2xl">
+          {schoolQuery.data?.school?.name}
+        </h1>
       </div>
     </DashboardHeader>
   );
 }
 
 function Sidebar() {
+  const schoolQuery = api.parent.getStudentSchool.useQuery();
+
   return (
     <DashboardSidebar>
       <nav className="grid grid-rows-5 gap-y-1">
@@ -51,13 +55,15 @@ function Sidebar() {
           title="Notifications"
           url="/parent/notifications"
         />
-        <DashboardSidebarItem
-          icon={GiTeacher}
-          iconBackgroundColor="bg-green-500"
-          iconFillColor="text-green-500"
-          title="Classroom"
-          url="/parent/classroom"
-        />
+        {schoolQuery.data?.student?.schoolId && (
+          <DashboardSidebarItem
+            icon={GiTeacher}
+            iconBackgroundColor="bg-green-500"
+            iconFillColor="text-green-500"
+            title="Classroom"
+            url="/parent/classroom"
+          />
+        )}
       </nav>
 
       <UserAvatar />
@@ -65,9 +71,7 @@ function Sidebar() {
   );
 }
 
-export default function ParentLayout(props: {
-  children: React.ReactElement;
-}) {
+export default function ParentLayout(props: { children: React.ReactElement }) {
   return (
     <DashboardShell header={Header} sidebar={Sidebar}>
       {props.children}

@@ -8,15 +8,16 @@ import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/inputs";
 import { api, RouterOutputs } from "@/utils/api";
 import { useRecoilState } from "recoil";
+import { PrimaryButton } from "@/components/buttons";
 
 function TableHeader() {
   return (
     <DashboardTableRow>
       <span></span>
 
-      <DashboardTableColumn className="px-12">ID</DashboardTableColumn>
-      <DashboardTableColumn className="px-10">Name</DashboardTableColumn>
-      <DashboardTableColumn className="px-10">
+      <DashboardTableColumn className="">ID</DashboardTableColumn>
+      <DashboardTableColumn className="">Name</DashboardTableColumn>
+      <DashboardTableColumn className="">
         Parents' Name
       </DashboardTableColumn>
     </DashboardTableRow>
@@ -79,15 +80,15 @@ function StudentRow(
   return (
     <DashboardTableRow>
       <Checkbox checked={checked} setChecked={setChecked} />
-      <DashboardTableColumn className="mx-auto">
+      <DashboardTableColumn className="">
         {props.id}
       </DashboardTableColumn>
-      <DashboardTableColumn className="px-10">
+      <DashboardTableColumn className="">
         {props.name}
       </DashboardTableColumn>
 
-      <DashboardTableColumn className="px-10">
-        {props.parent?.parent.name}
+      <DashboardTableColumn className="py-2">
+        {props.parent?.parent.name ? props.parent?.parent.name : <PrimaryButton disabled={true}>INVITED</PrimaryButton> }
       </DashboardTableColumn>
       <div className="grid h-full w-full grid-cols-2">
         <HiOutlinePencil
